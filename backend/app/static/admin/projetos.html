@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projetos - Administrador</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<link rel="stylesheet" href="painel.css?v=6">
+<link rel="stylesheet" href="capa.css?v=1">
+<link rel="stylesheet" href="perfil.css?v=1">
+</head>
+
+<body>
+
+<header class="painel-header">
+<a class="header-btn" href="../index.html">
+<i class="bi bi-arrow-left"></i> Início
+</a>
+
+<h1>Projetos</h1>
+
+<div class="header-spacer"></div>
+</header>
+
+<main class="painel-main">
+
+<p class="painel-subtitle">Escolha um projeto para entrar, ou cadastre um novo. Para entrar em um projeto é preciso o e-mail e a senha da conta dona dele.</p>
+
+<div id="project-grid" class="card-grid"></div>
+
+</main>
+
+<!-- MODAL NOVO PROJETO -->
+<div id="project-modal" class="overlay hidden">
+<div class="modal">
+
+<div class="modal-header">
+<h2>Novo projeto</h2>
+<span class="modal-close" data-close>✕</span>
+</div>
+
+<form id="project-form" class="modal-body">
+
+<p class="hint" id="project-owner">Você será o dono deste projeto.</p>
+
+<label for="p-name">Nome do projeto (instituição)</label>
+<input type="text" id="p-name" placeholder="Ex: USP" required>
+
+<label for="p-description">Descrição</label>
+<textarea id="p-description" placeholder="Ex: Universidade de São Paulo - Campus Butantã"></textarea>
+
+<label for="p-cover">Foto de capa (opcional)</label>
+<input type="file" id="p-cover" accept="image/*">
+
+<div id="project-error" class="form-error hidden"></div>
+
+<div class="modal-buttons">
+<button type="button" class="btn secondary" data-close>Cancelar</button>
+<button type="submit" class="btn" id="project-submit">Cadastrar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+
+<!-- MODAL EDITAR PROJETO -->
+<div id="edit-modal" class="overlay hidden">
+<div class="modal">
+
+<div class="modal-header">
+<h2 id="edit-modal-title">Editar projeto</h2>
+<span class="modal-close" data-close>✕</span>
+</div>
+
+<form id="edit-form" class="modal-body">
+
+<label for="ep-name">Nome do projeto (instituição)</label>
+<input type="text" id="ep-name" required>
+
+<label for="ep-description">Descrição</label>
+<textarea id="ep-description"></textarea>
+
+<label for="ep-cover">Foto de capa</label>
+<input type="file" id="ep-cover" accept="image/*">
+
+<p class="hint">Só o dono do projeto pode editar. Entre na sua conta se ainda não entrou.</p>
+
+<div id="edit-error" class="form-error hidden"></div>
+
+<div class="modal-buttons">
+<button type="button" class="btn secondary" data-close>Cancelar</button>
+<button type="submit" class="btn" id="edit-submit">Salvar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+
+<!-- MODAL CONFIRMAR EXCLUSÃO -->
+<div id="delete-modal" class="overlay hidden">
+<div class="modal">
+
+<div class="modal-header danger-header">
+<h2>Excluir projeto</h2>
+<span class="modal-close" data-close>✕</span>
+</div>
+
+<div class="modal-body">
+
+<p class="delete-question">Tem certeza que quer excluir <b id="delete-name"></b>?</p>
+
+<div class="delete-warning">
+<i class="bi bi-exclamation-triangle"></i>
+<div>
+Isso apaga junto <b>todos os ambientes, pastas, fotos e ligações</b> deste projeto.
+<br>Não dá para desfazer.
+</div>
+</div>
+
+<label for="delete-confirm-name">Para confirmar, digite o nome do projeto:</label>
+<input type="text" id="delete-confirm-name" autocomplete="off">
+
+<p class="hint">Só o dono do projeto pode excluir. Entre na sua conta se ainda não entrou.</p>
+
+<div id="delete-error" class="form-error hidden"></div>
+
+<div class="modal-buttons">
+<button type="button" class="btn secondary" data-close>Cancelar</button>
+<button type="button" class="btn btn-danger" id="delete-confirm" disabled>Excluir projeto</button>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js?v=1"></script>
+<script src="sessao.js?v=3"></script>
+<script src="auth.js?v=1"></script>
+<script src="capa.js?v=1"></script>
+<script src="perfil.js?v=1"></script>
+<script src="projetos.js?v=9"></script>
+
+</body>
+</html>

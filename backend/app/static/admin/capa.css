@@ -1,0 +1,144 @@
+/* Capas: card sem foto e área de escolher foto (projetos e ambientes) */
+
+/* ---------- card sem foto ---------- */
+.card-image.no-cover{
+  position:relative;
+  flex-direction:column;
+  gap:6px;
+  color:#fff;
+  background-color:#4D7C32;
+  overflow:hidden;
+}
+
+.card-image.no-cover::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 14px, transparent 14px 28px);
+}
+
+.card-image.no-cover > *{ position:relative; }
+
+.card-image.tone-0{ background-image:linear-gradient(135deg,#4D7C32,#86b061); }
+.card-image.tone-1{ background-image:linear-gradient(135deg,#3f6b4a,#74a98c); }
+.card-image.tone-2{ background-image:linear-gradient(135deg,#8a7a2e,#cdb95a); }
+.card-image.tone-3{ background-image:linear-gradient(135deg,#4f7080,#8db3c4); }
+.card-image.tone-4{ background-image:linear-gradient(135deg,#7a5a35,#bb9363); }
+
+.cover-initials{
+  font-size:42px;
+  font-weight:bold;
+  letter-spacing:2px;
+  text-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+
+.cover-caption{
+  font-size:12px;
+  font-weight:normal;
+  opacity:.85;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.card-image.no-cover i{ color:#fff; font-size:13px; }
+
+/* ---------- escolher foto ---------- */
+.cover-picker{ margin-bottom:14px; }
+
+.cover-picker-preview{
+  height:150px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:2px dashed #8ba97a;
+  border-radius:14px;
+  background:#f4f0e7 center / cover no-repeat;
+
+  color:#5f7f4c;
+  text-align:center;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.cover-picker-preview:hover,
+.cover-picker-preview:focus-visible,
+.cover-picker-preview.dragover{
+  border-color:#4D7C32;
+  background-color:#ece6d9;
+  outline:none;
+}
+
+.cover-picker-preview.has-image{ border-style:solid; border-color:#d8d2c7; }
+.cover-picker-preview.has-image .cover-picker-empty{ display:none; }
+
+.cover-picker-empty{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.cover-picker-empty i{ font-size:32px; }
+
+.cover-picker-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:6px;
+  min-height:18px;
+}
+
+.cover-picker-name{
+  flex:1;
+  min-width:0;
+  font-size:12px;
+  color:#8a8478;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.cover-picker-clear{
+  flex:none;
+  border:none;
+  background:none;
+  padding:0;
+  font:inherit;
+  font-size:12px;
+  font-weight:bold;
+  color:#b64040;
+  cursor:pointer;
+}
+
+.cover-picker-clear.hidden{ display:none; }
+
+
+/* ---------- excluir (ambiente e projeto) ---------- */
+.modal-header.danger-header{ background:#b64040; }
+
+.delete-question{ margin:0 0 14px; font-size:15px; }
+
+.delete-warning{
+  display:flex;
+  gap:12px;
+  margin-bottom:16px;
+  padding:12px 14px;
+
+  border-left:4px solid #d9a800;
+  border-radius:8px;
+  background:#fdf4de;
+  color:#5b4a14;
+
+  font-size:13px;
+  line-height:1.5;
+}
+
+.delete-warning i{ font-size:20px; color:#d9a800; flex:none; }
+
+.btn.btn-danger{ background:#b64040; }
+.btn.btn-danger:hover{ background:#cf4b4b; }

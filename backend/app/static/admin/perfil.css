@@ -1,0 +1,150 @@
+/* Perfil da conta no cabeçalho + selo "Seu projeto" */
+
+.perfil-box{
+  position:relative;
+  flex:none;
+}
+
+/* o seletor .perfil-box na frente garante que isto vença o "button{...}" das outras telas */
+.perfil-box .perfil-chip{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  width:auto;
+  flex:none;
+  padding:5px 12px 5px 5px;
+
+  border:none;
+  border-radius:999px;
+
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  font:bold 14px Arial, sans-serif;
+  text-decoration:none;
+
+  cursor:pointer;
+  transition:.2s;
+}
+
+.perfil-box .perfil-chip:hover{
+  background:rgba(255,255,255,.26);
+  transform:none;
+}
+
+.perfil-box .perfil-chip i{ font-size:14px; }
+
+.perfil-box .perfil-entrar{ padding:9px 14px; }
+.perfil-box .perfil-entrar i{ font-size:20px; }
+
+.perfil-box .perfil-avatar{
+  flex:none;
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:#f8f5ee;
+  color:#4D7C32;
+  font-size:15px;
+  font-weight:bold;
+}
+
+.perfil-box .perfil-avatar.big{ width:42px; height:42px; font-size:19px; background:#4D7C32; color:#fff; }
+.perfil-box .perfil-avatar.xl{ width:72px; height:72px; font-size:32px; background:#4D7C32; color:#fff; }
+
+.perfil-box .perfil-email{
+  max-width:190px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.perfil-box .perfil-menu{
+  position:absolute;
+  top:calc(100% + 10px);
+  right:0;
+  z-index:2000;
+
+  width:290px;
+  padding:8px;
+
+  border-radius:14px;
+  background:#f8f5ee;
+  color:#3f3a32;
+  box-shadow:0 16px 40px rgba(0,0,0,.25);
+  font-family:Arial, sans-serif;
+}
+
+.perfil-box .perfil-menu[hidden]{ display:none; }
+
+.perfil-box .perfil-menu-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 10px 12px;
+  margin-bottom:6px;
+  border-bottom:1px solid #e3ddcf;
+}
+
+.perfil-box .perfil-menu-head > div{ min-width:0; }
+.perfil-box .perfil-menu-head small{ display:block; font-size:11px; color:#8a8478; }
+
+.perfil-box .perfil-menu-email{
+  display:block;
+  font-size:13px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.perfil-box .perfil-menu a,
+.perfil-box .perfil-menu button{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:12px;
+
+  width:100%;
+  flex:none;
+  padding:11px 12px;
+
+  border:none;
+  border-radius:10px;
+  background:none;
+  color:#3f3a32;
+
+  font:bold 14px Arial, sans-serif;
+  text-decoration:none;
+  text-align:left;
+  cursor:pointer;
+}
+
+.perfil-box .perfil-menu a:hover,
+.perfil-box .perfil-menu button:hover{
+  background:#ece6d9;
+  transform:none;
+}
+
+.perfil-box .perfil-menu i{ font-size:17px; color:#4D7C32; }
+.perfil-box .perfil-menu .perfil-sair,
+.perfil-box .perfil-menu .perfil-sair i{ color:#b64040; }
+
+@media (max-width:700px){
+  .perfil-box .perfil-email{ display:none; }
+  .perfil-box .perfil-chip{ padding-right:10px; }
+}
+
+/* selo "Seu projeto" nos cards */
+.badge-dono{
+  flex:none;
+  padding:3px 9px;
+  border:1px solid #cfe0bf;
+  border-radius:999px;
+  background:#eef3e8;
+  color:#4D7C32;
+  font-size:11px;
+  font-weight:bold;
+  white-space:nowrap;
+}

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Administrador - Navegação IFPR</title>
+
+<script>
+  // precisa estar logado num projeto e ter escolhido um ambiente
+  (function(){
+    var session = null;
+    try { session = JSON.parse(localStorage.getItem("session")); } catch(e) {}
+    var env = new URLSearchParams(window.location.search).get("env");
+
+    if (!session) {
+      window.location.href = "projetos.html";
+    } else if (!env) {
+      window.location.href = "ambientes.html";
+    }
+  })();
+</script>
+
+<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<link rel="stylesheet" href="admin.css?v=5">
+<link rel="stylesheet" href="biblioteca.css">
+<link rel="stylesheet" href="perfil.css?v=1">
+
+</head>
+
+<body>
+
+<header>
+
+<div class="header-left">
+
+<button id="menu-toggle" title="Menu">
+<i class="bi bi-list"></i>
+</button>
+
+<a id="back-to-envs" href="ambientes.html" title="Voltar para os ambientes">
+<i class="bi bi-grid-3x3-gap"></i>
+<span>Ambientes</span>
+</a>
+
+</div>
+
+<h1 id="env-title">Tela do Administrador</h1>
+
+<div class="perfil" id="env-kind-badge" title="Tipo do ambiente">
+<i class="bi bi-person-circle"></i>
+</div>
+
+</header>
+
+<div id="sidebar-overlay"></div>
+
+<nav id="sidebar">
+
+<ul>
+
+<li data-page="navegacao" class="active">
+<i class="bi bi-house"></i>
+<span>Navegação</span>
+</li>
+
+<li data-page="como-funciona">
+<i class="bi bi-info-circle"></i>
+<span>Como funciona</span>
+</li>
+
+<li data-page="feedback">
+<i class="bi bi-chat-left-text"></i>
+<span>Feedback</span>
+</li>
+
+<li data-page="quem-somos">
+<i class="bi bi-people"></i>
+<span>Quem Somos</span>
+</li>
+
+</ul>
+
+</nav>
+
+<div id="cy"></div>
+
+<button id="library-toggle" title="Biblioteca">
+<i class="bi bi-folder-fill"></i>
+</button>
+
+<aside id="library-panel">
+
+<div class="library-header">
+
+<h2 id="library-title">Biblioteca</h2>
+
+<span class="library-close" id="library-close">✕</span>
+
+</div>
+
+<!-- VIEW: lista de pastas -->
+<div id="library-view-folders" class="library-view">
+
+<div class="library-toolbar">
+
+<button id="import-folder">
+<i class="bi bi-folder-plus"></i>
+Nova Pasta
+</button>
+
+</div>
+
+<div id="folder-list"></div>
+
+<div id="folder-empty" class="library-empty hidden">
+<i class="bi bi-folder2-open"></i>
+<span>Nenhuma pasta ainda</span>
+<small>Clique em "Nova Pasta" para importar suas primeiras imagens</small>
+</div>
+
+</div>
+
+<!-- VIEW: dentro de uma pasta -->
+<div id="library-view-images" class="library-view hidden">
+
+<div class="library-toolbar">
+
+<button id="folder-back" class="ghost-btn">
+<i class="bi bi-arrow-left"></i>
+Voltar
+</button>
+
+<div class="view-mode-switch">
+<button class="view-mode-btn active" data-mode="grid-large" title="Ícones grandes">
+<i class="bi bi-grid-3x3-gap-fill"></i>
+</button>
+<button class="view-mode-btn" data-mode="grid-small" title="Ícones pequenos">
+<i class="bi bi-grid-fill"></i>
+</button>
+<button class="view-mode-btn" data-mode="list" title="Lista">
+<i class="bi bi-list-ul"></i>
+</button>
+</div>
+
+<button id="chain-folder-btn" class="ghost-btn" title="Encadear pasta">
+<i class="bi bi-link-45deg"></i>
+Encadear
+</button>
+
+</div>
+
+<div id="folder-add-images" class="folder-add-images">
+<i class="bi bi-plus-lg"></i>
+Adicionar imagens
+</div>
+
+<div id="image-list" class="view-grid-large"></div>
+
+</div>
+
+<input type="file" id="file-input" accept="image/*" multiple hidden>
+<input type="file" id="folder-input" webkitdirectory directory multiple hidden>
+
+</aside>
+
+<div id="folder-context-menu" class="context-menu hidden">
+<div class="ctx-item" data-action="show">
+<i class="bi bi-diagram-3"></i> Mostrar no grafo
+</div>
+<div class="ctx-item" data-action="unplace">
+<i class="bi bi-eye-slash"></i> Tirar do grafo
+</div>
+<div class="ctx-item" data-action="rename">
+<i class="bi bi-pencil"></i> Renomear
+</div>
+<div class="ctx-item" data-action="copy">
+<i class="bi bi-copy"></i> Copiar
+</div>
+<div class="ctx-item" data-action="bridge">
+<i class="bi bi-signpost-2"></i> Conectar a outra pasta
+</div>
+<div class="ctx-item ctx-colors">
+<i class="bi bi-palette"></i> Cor
+<div class="color-swatches">
+<span class="swatch" data-color="#4D7C32" style="background:#4D7C32"></span>
+<span class="swatch" data-color="#2E6F95" style="background:#2E6F95"></span>
+<span class="swatch" data-color="#B08A2E" style="background:#B08A2E"></span>
+<span class="swatch" data-color="#8B4B8B" style="background:#8B4B8B"></span>
+<span class="swatch" data-color="#B64040" style="background:#B64040"></span>
+</div>
+</div>
+<div class="ctx-item ctx-danger" data-action="delete">
+<i class="bi bi-trash"></i> Excluir
+</div>
+</div>
+
+<!-- MODAL PASTA -->
+<div id="folder-modal" class="hidden">
+
+<div class="modal-content draggable">
+
+<div class="modal-header">
+
+<h2 id="folder-modal-title">Nova Pasta</h2>
+
+<span class="close-x" onclick="closeFolderModal()">✕</span>
+
+</div>
+
+<div class="modal-body">
+
+<input id="folder-name-input" placeholder="Nome da pasta">
+
+<div class="modal-buttons">
+
+<button onclick="confirmFolderModal()">Continuar</button>
+
+<button class="danger" onclick="closeFolderModal()">Cancelar</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MODAL ENCADEAR PASTA -->
+
+<div id="chain-modal" class="hidden">
+
+<div class="modal-content draggable">
+
+<div class="modal-header">
+
+<h2>Encadear pasta</h2>
+
+<span class="close-x" onclick="closeChainModal()">✕</span>
+
+</div>
+
+<div class="modal-body">
+
+<label class="edge-label">Direção da caminhada</label>
+
+<select id="chain-direction">
+<option value="north">Norte</option>
+<option value="south">Sul</option>
+<option value="east">Leste</option>
+<option value="west">Oeste</option>
+</select>
+
+<label class="edge-label" style="margin-top:14px;display:block;">
+Ordem das fotos (arraste pra reordenar)
+</label>
+
+<div id="chain-image-list"></div>
+
+<div class="modal-buttons">
+<button onclick="confirmChain()">Encadear</button>
+<button class="danger" onclick="closeChainModal()">Cancelar</button>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MODAL CONECTAR PASTAS -->
+
+<div id="bridge-modal" class="hidden">
+
+<div class="modal-content draggable">
+
+<div class="modal-header">
+
+<h2>Conectar pastas</h2>
+
+<span class="close-x" onclick="closeBridgeModal()">✕</span>
+
+</div>
+
+<div class="modal-body">
+
+<label class="edge-label">Pasta de destino</label>
+<select id="bridge-target-folder"></select>
+
+<label class="edge-label" style="margin-top:14px;display:block;">
+Sai de (nesta pasta)
+</label>
+<select id="bridge-source-node"></select>
+
+<label class="edge-label" style="margin-top:14px;display:block;">
+Entra em (na pasta de destino)
+</label>
+<select id="bridge-target-node"></select>
+
+<label class="edge-label" style="margin-top:14px;display:block;">
+Direção
+</label>
+<select id="bridge-direction">
+<option value="north">Norte</option>
+<option value="south">Sul</option>
+<option value="east">Leste</option>
+<option value="west">Oeste</option>
+</select>
+
+<div class="modal-buttons">
+<button onclick="confirmBridge()">Conectar</button>
+<button class="danger" onclick="closeBridgeModal()">Cancelar</button>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<button id="viewer-btn"
+title="Visualizador">
+
+<i class="bi bi-compass"></i>
+
+</button>
+
+<!-- JANELINHA FLUTUANTE DO VISUALIZADOR (PIP) -->
+
+<div id="viewer-pip" class="hidden">
+
+<div class="pip-header">
+
+<span class="pip-title">
+<i class="bi bi-compass"></i>
+Visualizador
+</span>
+
+<div class="pip-controls">
+
+<i class="bi bi-dash-lg" id="pip-minimize" title="Minimizar"></i>
+<i class="bi bi-arrows-fullscreen" id="pip-fullscreen" title="Tela cheia"></i>
+<i class="bi bi-x-lg" id="pip-close" title="Fechar"></i>
+
+</div>
+
+</div>
+
+<div class="pip-body">
+<iframe id="pip-iframe" title="Visualizador"></iframe>
+</div>
+
+<div class="pip-resize-handle"></div>
+
+</div>
+
+<!-- MODAL NODE -->
+
+<div id="modal" class="hidden">
+
+<div class="modal-content draggable">
+
+<div class="modal-header">
+
+<h2 id="modal-title">Novo Node</h2>
+
+<span class="close-x" onclick="closeModal()">✕</span>
+
+</div>
+
+<div class="modal-body">
+
+<input id="node-name" placeholder="Nome do local">
+
+<label class="upload-area" for="node-image">
+
+<div class="upload-text">
+
+<span>Arraste uma imagem</span>
+
+<small>ou clique para selecionar</small>
+
+</div>
+
+<input type="file" id="node-image" hidden>
+
+</label>
+
+<img id="preview">
+
+<div class="modal-buttons">
+
+<button onclick="saveNode()">Salvar</button>
+
+<button class="danger" onclick="deleteNodeFromModal()">
+
+Excluir
+
+</button>
+
+</div>
+
+<button id="start-node-btn" class="start-node-btn hidden" onclick="setAsStartNode()">
+<i class="bi bi-flag"></i> Definir como foto de partida
+</button>
+
+<!-- passagens pra outros ambientes que saem desta foto -->
+<div id="door-info" class="door-info hidden"></div>
+
+<button id="passage-btn" class="start-node-btn passage-btn hidden" onclick="openPassageModal()">
+<i class="bi bi-signpost-2"></i> Criar passagem para outro ambiente
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MODAL EDGE -->
+
+<div id="edge-modal" class="hidden">
+
+<div class="modal-content draggable">
+
+<div class="modal-header">
+
+<h2>Editar Conexão</h2>
+
+<span class="close-x" onclick="closeEdgeModal()">✕</span>
+
+</div>
+
+<div class="modal-body">
+
+<label class="edge-label">
+
+Direção
+
+</label>
+
+<select id="edge-direction">
+
+<option value="north">Norte</option>
+<option value="south">Sul</option>
+<option value="east">Leste</option>
+<option value="west">Oeste</option>
+<option value="auto">Automático</option>
+
+</select>
+
+<div class="modal-buttons">
+
+<button onclick="saveEdge()">Salvar</button>
+
+<button class="danger" onclick="deleteEdge()">
+
+Excluir
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MODAL CRIAR PASSAGEM PARA OUTRO AMBIENTE -->
+
+<div id="passage-modal" class="hidden">
+
+<div class="modal-content draggable">
+
+<div class="modal-header">
+
+<h2>Nova passagem</h2>
+
+<span class="close-x" onclick="closePassageModal()">✕</span>
+
+</div>
+
+<div class="modal-body">
+
+<label class="edge-label">Sai desta foto</label>
+<p id="passage-source" class="passage-fixed"></p>
+
+<label class="edge-label">Vai para o ambiente</label>
+<select id="passage-target-env" class="passage-select"></select>
+
+<label class="edge-label">Entra na foto</label>
+<select id="passage-target-node" class="passage-select"></select>
+<img id="passage-preview" class="passage-preview hidden" alt="">
+
+<label class="edge-label">Direção</label>
+<select id="passage-direction" class="passage-select">
+<option value="north">Norte</option>
+<option value="south">Sul</option>
+<option value="east">Leste</option>
+<option value="west">Oeste</option>
+</select>
+<p class="passage-hint">A volta é criada sozinha, na direção oposta.</p>
+
+<div class="modal-buttons">
+<button onclick="confirmPassage()">Criar passagem</button>
+<button class="danger" onclick="closePassageModal()">Cancelar</button>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="toast-container"></div>
+
+<script src="sessao.js?v=3"></script>
+<script src="perfil.js?v=1"></script>
+<script src="admin.js?v=8"></script>
+<script src="biblioteca.js?v=5"></script>
+
+</body>
+</html>

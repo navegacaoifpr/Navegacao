@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onde você quer começar?</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<link rel="stylesheet" href="visitante.css?v=4">
+</head>
+
+<body>
+
+<main class="entrada">
+
+<!-- mesmo logo da página de entrada; se não carregar, aparece o nome escrito -->
+<img class="logo" id="logo" src="../assets/logo-ifpr.png" alt="Instituto Federal do Paraná - Jacarezinho"
+onerror="this.hidden = true; document.getElementById('logo-text').hidden = false;">
+
+<div id="logo-text" class="logo-text" hidden>
+<strong>INSTITUTO FEDERAL</strong>
+<span>Paraná Campus Jacarezinho</span>
+</div>
+
+<!-- instituições que não são o IFPR mostram o próprio nome no lugar do logo -->
+<h1 id="project-title" class="titulo-projeto" hidden></h1>
+
+<p class="pergunta">Onde você quer começar?</p>
+
+<div class="carousel">
+
+<button class="carousel-arrow prev hidden" id="prev-btn" title="Anteriores">
+<i class="bi bi-chevron-left"></i>
+</button>
+
+<div class="carousel-track" id="card-track"></div>
+
+<button class="carousel-arrow next hidden" id="next-btn" title="Próximos">
+<i class="bi bi-chevron-right"></i>
+</button>
+
+</div>
+
+<div class="carousel-dots" id="carousel-dots"></div>
+
+<a class="voltar" id="back-link" href="index.html">
+<i class="bi bi-arrow-left"></i> Escolher outra instituição
+</a>
+
+</main>
+
+<script src="carrossel.js?v=1"></script>
+<script src="ambientes.js?v=1"></script>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+/* Página "Minha conta" */
+
+.conta-main{ max-width:960px; }
+
+.conta-card{
+  padding:24px 26px;
+  border-radius:18px;
+  background:#f8f5ee;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);
+}
+
+.conta-resumo{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  margin-bottom:26px;
+}
+
+/* o .perfil-box é só para reaproveitar o estilo do avatar */
+.conta-resumo .perfil-box{ flex:none; }
+
+.conta-resumo-texto{ flex:1; min-width:0; }
+
+.conta-resumo-texto h2{
+  margin:0 0 4px;
+  font-size:22px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.conta-resumo-texto p{ margin:0; font-size:13px; color:#8a8478; }
+
+.conta-sair{
+  flex:none;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 16px;
+  border:2px solid #b64040;
+  border-radius:12px;
+  background:none;
+  color:#b64040;
+  font:bold 14px Arial, sans-serif;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.conta-sair:hover{ background:#b64040; color:#fff; }
+
+.conta-ok{
+  margin-bottom:16px;
+  padding:10px 12px;
+  border-left:4px solid #4D7C32;
+  border-radius:8px;
+  background:#eaf4e4;
+  color:#3b6a24;
+  font-size:13px;
+}
+
+.conta-ok.hidden{ display:none; }
+
+.conta-main .section-title{ margin-top:30px; }
+.conta-main .section-title i{ color:#4D7C32; }
+
+.conta-duas{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+  gap:20px;
+}
+
+.conta-form h3{ margin:0 0 16px; font-size:17px; }
+
+.conta-form label{
+  display:block;
+  margin-bottom:6px;
+  font-size:13px;
+  font-weight:bold;
+  color:#5b564d;
+}
+
+.conta-form input{
+  width:100%;
+  padding:11px 12px;
+  margin-bottom:14px;
+  border:1px solid #d8d2c7;
+  border-radius:10px;
+  background:#fffdf8;
+  font:15px Arial, sans-serif;
+}
+
+.conta-form input:focus{ outline:none; border-color:#4D7C32; }
+
+.conta-hint{ margin:-8px 0 14px; font-size:12px; color:#8a8478; }
+
+.conta-form .btn{ width:100%; flex:none; }
+
+.conta-vazio{
+  grid-column:1 / -1;
+  padding:26px;
+  border:2px dashed #cfc6b4;
+  border-radius:16px;
+  text-align:center;
+  color:#7b756d;
+}
+
+.conta-vazio a{ color:#4D7C32; font-weight:bold; }
+
+@media (max-width:640px){
+  .conta-resumo{ flex-wrap:wrap; }
+  .conta-sair{ width:100%; justify-content:center; }
+}

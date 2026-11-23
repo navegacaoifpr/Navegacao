@@ -1,0 +1,298 @@
+/* Mesmo visual da página de entrada ("Como você quer entrar?") */
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+
+  font-family:Arial, sans-serif;
+  background:#eee6d2;
+  color:#3f3a32;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.entrada{
+  width:100%;
+  padding:40px 20px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* =========================
+   LOGO E PERGUNTA
+========================= */
+
+.logo{
+  height:94px;
+  width:auto;
+  margin-bottom:16px;
+  image-rendering:-webkit-optimize-contrast;
+}
+
+.logo-text{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  line-height:1.2;
+}
+
+.logo-text strong{
+  font-size:24px;
+  color:#111;
+  letter-spacing:.5px;
+}
+
+.logo-text span{
+  font-size:18px;
+  color:#222;
+}
+
+/* sem isso, o display:flex acima vence o atributo hidden e o texto
+   reserva aparece junto com a imagem do logo */
+.logo-text[hidden],
+.logo[hidden]{
+  display:none;
+}
+
+/* nome da instituição quando ela não tem logo próprio */
+.titulo-projeto{
+  margin:0 0 8px;
+  font-size:32px;
+  color:#4D7C32;
+}
+
+.pergunta{
+  margin:0 0 40px;
+  font-size:16px;
+  color:#5b564d;
+}
+
+/* =========================
+   CARROSSEL
+========================= */
+
+.carousel{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:14px;
+
+  width:100%;
+  max-width:1280px;
+  justify-content:center;
+}
+
+.carousel-track{
+  display:flex;
+  gap:26px;
+
+  /* cabem 3 cards; se tiver mais, desliza pro lado.
+     O "+ 12px" é o espaço interno (padding) de 6px de cada lado: sem ele
+     3 cards já passavam do espaço e apareciam setas e bolinhas à toa */
+  max-width:calc(3 * 360px + 2 * 26px + 12px);
+  width:100%;
+
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+
+  /* espaço pra sombra dos cards não ser cortada */
+  padding:14px 6px 26px;
+
+  scrollbar-width:none;
+}
+
+.carousel-track::-webkit-scrollbar{
+  display:none;
+}
+
+/* com poucos ambientes, os cards ficam centralizados */
+.carousel-track > :first-child{ margin-left:auto; }
+.carousel-track > :last-child{ margin-right:auto; }
+
+.carousel-arrow{
+  flex:none;
+  width:46px;
+  height:46px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:none;
+  border-radius:50%;
+
+  background:#4D7C32;
+  color:white;
+  font-size:20px;
+
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(0,0,0,.18);
+  transition:.2s;
+}
+
+.carousel-arrow:hover{
+  background:#5d9440;
+  transform:scale(1.06);
+}
+
+.carousel-arrow:disabled{
+  opacity:.35;
+  cursor:default;
+  transform:none;
+}
+
+.carousel-arrow.hidden{
+  display:none;
+}
+
+.carousel-dots{
+  display:flex;
+  gap:8px;
+  min-height:10px;
+  margin-top:4px;
+}
+
+.carousel-dots span{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#cfc6b4;
+  transition:.2s;
+}
+
+.carousel-dots span.active{
+  background:#4D7C32;
+  transform:scale(1.2);
+}
+
+/* =========================
+   CARD DO AMBIENTE
+========================= */
+
+.env-card{
+  flex:0 0 360px;
+  scroll-snap-align:center;
+
+  display:flex;
+  flex-direction:column;
+
+  border-radius:20px;
+  overflow:hidden;
+
+  background:#f8f5ee;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+
+  color:inherit;
+  text-decoration:none;
+
+  transition:transform .2s, box-shadow .2s;
+}
+
+.env-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 16px 40px rgba(0,0,0,0.16);
+}
+
+.env-photo{
+  height:200px;
+  background:#d9d1c1 center / cover no-repeat;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:40px;
+  color:#b9b09d;
+}
+
+.env-info{
+  padding:22px 24px 26px;
+  text-align:center;
+}
+
+.env-name{
+  display:block;
+  font-size:20px;
+  font-weight:bold;
+  color:#3f3a32;
+}
+
+.env-description{
+  display:block;
+  margin-top:10px;
+
+  font-size:14px;
+  line-height:1.5;
+  color:#7b756d;
+}
+
+.visit-message{
+  margin:0 auto;
+  padding:20px;
+  color:#8a8478;
+  text-align:center;
+}
+
+/* =========================
+   VOLTAR
+========================= */
+
+.voltar{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+
+  margin-top:34px;
+
+  color:#7b756d;
+  font-size:14px;
+  text-decoration:none;
+}
+
+.voltar:hover{
+  color:#3f3a32;
+}
+
+@media (max-width:600px){
+  .env-card{ flex-basis:80vw; }
+  .carousel-arrow{ display:none; }
+}
+
+
+/* card sem foto: fundo colorido com as iniciais */
+.env-photo.no-photo{
+  position:relative;
+  color:#fff;
+  overflow:hidden;
+  background-color:#4D7C32;
+}
+
+.env-photo.no-photo::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 16px, transparent 16px 32px);
+}
+
+.env-photo.no-photo span{
+  position:relative;
+  font-size:54px;
+  font-weight:bold;
+  letter-spacing:3px;
+  text-shadow:0 2px 10px rgba(0,0,0,.25);
+}
+
+.env-photo.tone-0{ background-image:linear-gradient(135deg,#4D7C32,#86b061); }
+.env-photo.tone-1{ background-image:linear-gradient(135deg,#3f6b4a,#74a98c); }
+.env-photo.tone-2{ background-image:linear-gradient(135deg,#8a7a2e,#cdb95a); }
+.env-photo.tone-3{ background-image:linear-gradient(135deg,#4f7080,#8db3c4); }
+.env-photo.tone-4{ background-image:linear-gradient(135deg,#7a5a35,#bb9363); }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navegação IFPR</title>
+
+  <link rel="stylesheet" href="style.css?v=3">
+
+</head>
+
+<body>
+  <a id="envs-btn" href="../visitante/index.html" title="Escolher outro ambiente">
+  ▦
+  </a>
+
+  <script>
+  // Dentro da janelinha do admin não faz sentido voltar pra escolha de
+  // ambientes (carregaria a tela DENTRO do próprio iframe); só mostra o
+  // botão quando o visualizador é aberto sozinho, pelo visitante.
+  if (window.self !== window.top) {
+    document.getElementById("envs-btn").style.display = "none";
+  }
+
+  // volta pros ambientes da mesma instituição (ou pra escolha da instituição)
+  (function () {
+    var project = new URLSearchParams(window.location.search).get("project");
+    document.getElementById("envs-btn").href = project
+      ? "../visitante/ambientes.html?project=" + encodeURIComponent(project)
+      : "../visitante/index.html";
+  })();
+  </script>
+
+<div class="viewer">
+
+<img id="view" alt="Visualização atual" />
+
+<div class="controls">
+  <button id="N">N</button>
+  <button id="O">O</button>
+  <button id="S">S</button>
+  <button id="L">L</button>
+</div>
+
+<div id="node-id-display"></div>
+
+<div id="env-banner"></div>
+
+</div>
+
+<script src="app.js?v=2"></script>
+
+</body>
+</html>

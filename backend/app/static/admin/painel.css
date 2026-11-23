@@ -1,0 +1,689 @@
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial, sans-serif;
+  background:#eee6d2;
+  color:#3f3a32;
+}
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.painel-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+
+  height:68px;
+  padding:0 24px;
+
+  background:#4D7C32;
+  color:white;
+
+  box-shadow:0 2px 10px rgba(0,0,0,0.15);
+}
+
+.painel-header h1{
+  margin:0;
+  font-size:22px;
+}
+
+.header-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  padding:9px 14px;
+
+  border:none;
+  border-radius:10px;
+
+  background:rgba(255,255,255,0.14);
+  color:white;
+
+  font-size:14px;
+  font-weight:bold;
+  text-decoration:none;
+
+  cursor:pointer;
+  transition:.2s;
+}
+
+.header-btn:hover{
+  background:rgba(255,255,255,0.26);
+}
+
+.header-spacer{
+  width:110px;
+}
+
+/* =========================
+   ÁREA DOS CARDS
+========================= */
+
+.painel-main{
+  max-width:1100px;
+  margin:0 auto;
+  padding:36px 24px 60px;
+}
+
+.painel-subtitle{
+  text-align:center;
+  color:#7b756d;
+  margin:0 0 30px;
+}
+
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+  gap:26px;
+}
+
+.card-slot{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.card{
+  position:relative;
+
+  background:#f8f5ee;
+  border-radius:18px;
+  overflow:hidden;
+
+  box-shadow:0 10px 26px rgba(0,0,0,0.12);
+
+  cursor:pointer;
+  transition:transform .2s, box-shadow .2s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 34px rgba(0,0,0,0.18);
+}
+
+.card-image{
+  height:150px;
+  background:#d9d1c1;
+  background-size:cover;
+  background-position:center;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:40px;
+  font-weight:bold;
+  color:#4D7C32;
+}
+
+.card-body{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  padding:14px 16px;
+}
+
+.card-body i{
+  font-size:18px;
+  color:#4D7C32;
+}
+
+.card-title{
+  flex:1;
+  font-weight:bold;
+  font-size:16px;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.card-info{
+  padding:0 16px 14px;
+  margin-top:-6px;
+  font-size:12px;
+  color:#8a8478;
+}
+
+/* card "+" */
+.card-add{
+  min-height:218px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+
+  border:2px dashed #8ba97a;
+  background:transparent;
+  box-shadow:none;
+
+  color:#4D7C32;
+  font-weight:bold;
+}
+
+.card-add i{
+  font-size:46px;
+}
+
+.card-add:hover{
+  background:#f4f0e7;
+  box-shadow:none;
+}
+
+/* menu ⋮ do card */
+.card-menu-btn{
+  position:absolute;
+  top:10px;
+  right:10px;
+
+  width:34px;
+  height:34px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:none;
+  border-radius:50%;
+
+  background:rgba(248,245,238,0.92);
+  color:#3f3a32;
+  font-size:18px;
+
+  cursor:pointer;
+}
+
+.card-menu-btn:hover{
+  background:white;
+}
+
+.popover{
+  position:fixed;
+  z-index:1000;
+
+  min-width:210px;
+
+  background:#f8f5ee;
+  border-radius:12px;
+  padding:6px;
+
+  box-shadow:0 14px 34px rgba(0,0,0,0.22);
+}
+
+.popover-title{
+  padding:8px 10px 4px;
+  font-size:12px;
+  font-weight:bold;
+  color:#8a8478;
+}
+
+.popover-text{
+  padding:0 10px 8px;
+  font-size:13px;
+  color:#5b564d;
+}
+
+.popover-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  padding:10px;
+  border-radius:8px;
+
+  font-size:14px;
+  cursor:pointer;
+}
+
+.popover-item:hover{
+  background:#ece6d9;
+}
+
+.popover-item i{
+  color:#4D7C32;
+}
+
+.popover-item.danger-item,
+.popover-item.danger-item i{
+  color:#b64040;
+}
+
+/* =========================
+   BOLINHAS DAS INTERSECÇÕES
+========================= */
+
+.dots{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+  min-height:18px;
+}
+
+.dot{
+  width:18px;
+  height:18px;
+
+  border-radius:50%;
+  border:2px solid #3f3a32;
+  background:#f2d21b;
+
+  cursor:pointer;
+  transition:.2s;
+}
+
+.dot:hover{
+  transform:scale(1.2);
+}
+
+.unlinked{
+  margin-top:40px;
+  padding:16px 18px;
+
+  border-radius:14px;
+  background:#f4f0e7;
+
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+
+  font-size:13px;
+  color:#7b756d;
+}
+
+.unlinked .dot-label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.overlay{
+  position:fixed;
+  inset:0;
+  z-index:900;
+
+  background:rgba(0,0,0,0.3);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:20px;
+}
+
+.overlay.hidden{
+  display:none;
+}
+
+.modal{
+  width:100%;
+  max-width:420px;
+  max-height:calc(100vh - 40px);
+  overflow:auto;
+
+  background:#f8f5ee;
+  border-radius:18px;
+
+  box-shadow:0 20px 50px rgba(0,0,0,0.28);
+}
+
+.modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:14px 18px;
+
+  background:#4D7C32;
+  color:white;
+}
+
+.modal-header h2{
+  margin:0;
+  font-size:20px;
+}
+
+.modal-close{
+  cursor:pointer;
+  font-size:20px;
+  opacity:.85;
+}
+
+.modal-close:hover{
+  opacity:1;
+}
+
+.modal-body{
+  padding:18px;
+}
+
+.modal-body label{
+  display:block;
+  margin-bottom:6px;
+
+  font-size:13px;
+  font-weight:bold;
+  color:#5b564d;
+}
+
+.modal-body input[type="text"],
+.modal-body input[type="password"],
+.modal-body textarea{
+  width:100%;
+  padding:11px 12px;
+  margin-bottom:14px;
+
+  border-radius:10px;
+  border:1px solid #d8d2c7;
+  background:#fffdf8;
+
+  font-family:inherit;
+  font-size:15px;
+}
+
+.modal-body textarea{
+  resize:vertical;
+  min-height:70px;
+}
+
+.modal-body input:focus,
+.modal-body textarea:focus{
+  outline:none;
+  border-color:#4D7C32;
+}
+
+.modal-body input[type="file"]{
+  margin-bottom:14px;
+  font-size:13px;
+}
+
+.hint{
+  margin:-8px 0 14px;
+  font-size:12px;
+  color:#8a8478;
+}
+
+/* escolha do tipo de ambiente */
+.kind-options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.kind-option{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+
+  padding:14px 10px;
+
+  border:2px solid #d8d2c7;
+  border-radius:12px;
+
+  text-align:center;
+  font-size:13px;
+  font-weight:bold;
+
+  cursor:pointer;
+  transition:.2s;
+}
+
+.kind-option input{
+  display:none;
+}
+
+.kind-option .kind-dot{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  border:2px solid #3f3a32;
+}
+
+.kind-option small{
+  font-weight:normal;
+  color:#8a8478;
+}
+
+.kind-option.selected{
+  border-color:#4D7C32;
+  background:#eef3e8;
+}
+
+.kind-dot.intersecao{ background:#f2d21b; }
+.kind-dot.comum{ background:#6ec6ff; }
+
+.form-error{
+  margin-bottom:14px;
+  padding:10px 12px;
+
+  border-left:4px solid #b64040;
+  border-radius:8px;
+  background:#fbeaea;
+  color:#b64040;
+
+  font-size:13px;
+}
+
+.form-error.hidden{
+  display:none;
+}
+
+.modal-buttons{
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  flex:1;
+  padding:12px;
+
+  border:none;
+  border-radius:10px;
+
+  background:#4D7C32;
+  color:white;
+
+  font-size:14px;
+  font-weight:bold;
+
+  cursor:pointer;
+  transition:.2s;
+}
+
+.btn:hover{
+  background:#5d9440;
+}
+
+.btn:disabled{
+  opacity:.6;
+  cursor:wait;
+}
+
+.btn.secondary{
+  background:#d8d2c7;
+  color:#3f3a32;
+}
+
+.btn.secondary:hover{
+  background:#cbc4b7;
+}
+
+.empty-state{
+  grid-column:1 / -1;
+  text-align:center;
+  color:#8a8478;
+  padding:10px;
+}
+
+/* aviso rápido */
+.toast{
+  position:fixed;
+  top:86px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:1200;
+
+  padding:12px 18px;
+  border-radius:12px;
+  border-left:4px solid #4D7C32;
+
+  background:#f8f5ee;
+  box-shadow:0 12px 30px rgba(0,0,0,0.2);
+
+  font-size:14px;
+}
+
+.toast.error{
+  border-left-color:#b64040;
+}
+
+.cover-preview{
+  display:block;
+  width:100%;
+  max-height:160px;
+  object-fit:cover;
+
+  margin:-6px 0 14px;
+  border-radius:10px;
+}
+
+.cover-preview.hidden{
+  display:none;
+}
+
+/* =========================
+   BOTÃO DO MAPA DE LIGAÇÕES
+========================= */
+
+.map-banner{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:16px;
+
+  margin:0 0 28px;
+  padding:16px 20px;
+
+  border:2px solid #4D7C32;
+  border-radius:16px;
+  background:#f8f5ee;
+
+  font-family:inherit;
+  text-align:left;
+  color:#3f3a32;
+
+  cursor:pointer;
+  transition:.2s;
+}
+
+.map-banner:hover{
+  background:#eef3e8;
+  transform:translateY(-2px);
+}
+
+.map-banner-icon{
+  width:46px;
+  height:46px;
+  flex:none;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+  background:#4D7C32;
+  color:white;
+  font-size:22px;
+}
+
+.map-banner-text{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+
+.map-banner-text strong{
+  font-size:17px;
+}
+
+.map-banner-text small{
+  color:#7b756d;
+  font-size:13px;
+}
+
+.map-banner > .bi-chevron-right{
+  font-size:20px;
+  color:#4D7C32;
+}
+
+.card-links{
+  padding:0 16px 14px;
+  margin-top:-6px;
+
+  font-size:12px;
+  color:#4D7C32;
+  font-weight:bold;
+}
+
+.card-links.muted{
+  color:#a39c8f;
+  font-weight:normal;
+}
+
+/* =========================
+   SEÇÕES: COMUNS E INTERSECÇÕES
+========================= */
+
+.section-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:34px 0 4px;
+  font-size:19px;
+}
+
+.section-title:first-of-type{
+  margin-top:0;
+}
+
+.section-title .kind-dot{
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  border:2px solid #3f3a32;
+}
+
+.section-hint{
+  margin:0 0 16px;
+  font-size:13px;
+  color:#8a8478;
+}
+
+.card-slot.kind-intersecao .card{
+  border-top:5px solid #d9a800;
+}
+
+.card-add.add-intersecao{
+  border-color:#d9a800;
+  color:#9a7700;
+}

@@ -1,0 +1,69 @@
+/* Painel verde ao lado do login / cadastro / redefinição de senha (versão simples) */
+
+body.com-arte{
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);
+  align-items:stretch;
+  padding:0;
+}
+
+body.com-arte .login-card{
+  align-self:center;
+  justify-self:center;
+  margin:32px 20px;
+}
+
+.login-art{
+  box-sizing:border-box;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:36px 44px 44px;
+  background:#4D7C32;
+  color:#fff;
+}
+
+.login-art-logo{
+  align-self:flex-start;
+  padding:10px 16px;
+  border-radius:14px;
+  background:#f8f5ee;
+}
+
+.login-art-logo img{ display:block; height:46px; width:auto; }
+
+.login-art-svg{
+  width:100%;
+  max-width:420px;
+  height:auto;
+  flex:0 0 auto;
+  align-self:center;
+  margin:24px 0;
+}
+
+.login-art-text h2{
+  margin:0 0 10px;
+  max-width:380px;
+  font-size:32px;
+  line-height:1.15;
+}
+
+.login-art-text p{
+  margin:0;
+  max-width:400px;
+  font-size:16px;
+  line-height:1.5;
+  color:rgba(255,255,255,.9);
+}
+
+/* telas estreitas: só o formulário */
+@media (max-width:900px){
+  body.com-arte{
+    display:flex;
+    padding:20px;
+  }
+
+  body.com-arte .login-card{ margin:0; }
+  .login-art{ display:none; }
+}

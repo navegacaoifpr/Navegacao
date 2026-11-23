@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de ligação - Administrador</title>
+
+<script>
+  // precisa estar logado num projeto e ter escolhido a intersecção
+  (function(){
+    var session = null;
+    try { session = JSON.parse(localStorage.getItem("session")); } catch(e) {}
+    var env = new URLSearchParams(window.location.search).get("env");
+
+    if (!session) {
+      window.location.href = "projetos.html";
+    } else if (!env) {
+      window.location.href = "ambientes.html";
+    }
+  })();
+</script>
+
+<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<link rel="stylesheet" href="painel.css?v=4">
+<link rel="stylesheet" href="mapa.css?v=1">
+<link rel="stylesheet" href="mapa-visualizador.css?v=1">
+<link rel="stylesheet" href="perfil.css?v=1">
+</head>
+
+<body class="map-page">
+
+<header class="painel-header">
+<a class="header-btn" href="ambientes.html">
+<i class="bi bi-grid-3x3-gap"></i> Ambientes
+</a>
+
+<h1 id="inter-title">Mapa de ligação</h1>
+
+<button class="header-btn" id="viewer-btn" type="button" title="Abrir o visualizador para acompanhar a navegação">
+<i class="bi bi-compass"></i> Visualizador
+</button>
+</header>
+
+<div class="map-layout">
+
+<aside class="env-panel">
+
+<h2>Ambientes do projeto</h2>
+<p class="hint">Monte o quebra-cabeça: coloque os ambientes no mapa e clique num card para encaixar ele em outro. Cada ligação é uma passagem de uma foto de um ambiente para uma foto do outro.</p>
+
+<div class="legend">
+<span><i class="legend-box comum"></i> Ambiente comum</span>
+<span><i class="legend-box intersecao"></i> Intersecção (caminho)</span>
+</div>
+
+<div id="env-list"></div>
+
+</aside>
+
+<div class="map-area">
+<div id="cy"></div>
+
+<div id="map-empty" class="map-empty hidden">
+<i class="bi bi-diagram-3"></i>
+<b>O mapa está vazio</b>
+<span>Adicione ambientes e intersecções pela lista ao lado para começar.</span>
+</div>
+</div>
+
+</div>
+
+<!-- JANELINHA FLUTUANTE DO VISUALIZADOR -->
+<div id="viewer-pip" class="viewer-pip hidden">
+
+<div class="pip-header">
+
+<span class="pip-title">
+<i class="bi bi-compass"></i>
+<span id="pip-title">Visualizador</span>
+</span>
+
+<div class="pip-controls">
+<i class="bi bi-arrow-clockwise" id="pip-refresh" title="Recarregar (volta para a foto de partida)"></i>
+<i class="bi bi-dash-lg" id="pip-minimize" title="Minimizar"></i>
+<i class="bi bi-arrows-fullscreen" id="pip-fullscreen" title="Tela cheia"></i>
+<i class="bi bi-x-lg" id="pip-close" title="Fechar"></i>
+</div>
+
+</div>
+
+<div class="pip-body">
+<iframe id="pip-iframe" title="Visualizador"></iframe>
+</div>
+
+<div class="pip-resize-handle"></div>
+
+</div>
+
+<!-- MODAL CONECTAR AMBIENTES -->
+<div id="link-modal" class="overlay hidden">
+<div class="modal">
+
+<div class="modal-header">
+<h2>Conectar ambientes</h2>
+<span class="modal-close" data-close>✕</span>
+</div>
+
+<form id="link-form" class="modal-body">
+
+<label>Ambiente de origem</label>
+<p id="link-source-env" class="fixed-value"></p>
+
+<label for="link-target-env">Ambiente de destino</label>
+<select id="link-target-env"></select>
+
+<label for="link-source-node">Sai de (no ambiente de origem)</label>
+<select id="link-source-node"></select>
+<img id="link-source-preview" class="node-preview hidden" alt="">
+
+<label for="link-target-node">Entra em (no ambiente de destino)</label>
+<select id="link-target-node"></select>
+<img id="link-target-preview" class="node-preview hidden" alt="">
+
+<label for="link-direction">Direção</label>
+<select id="link-direction">
+<option value="north">Norte</option>
+<option value="south">Sul</option>
+<option value="east">Leste</option>
+<option value="west">Oeste</option>
+</select>
+<p class="hint">Direção de quem sai da origem. A volta é criada sozinha, na direção oposta.</p>
+
+<div id="link-error" class="form-error hidden"></div>
+
+<div class="modal-buttons">
+<button type="button" class="btn secondary" data-close>Cancelar</button>
+<button type="submit" class="btn" id="link-submit">Conectar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+
+<script src="sessao.js?v=3"></script>
+<script src="perfil.js?v=1"></script>
+<script src="mapa.js?v=1"></script>
+<script src="mapa-visualizador.js?v=1"></script>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+/* Botão "Visualizador" no cabeçalho e janelinha flutuante do mapa de ligação */
+
+button.header-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font:inherit;
+  font-weight:bold;
+  font-size:14px;
+  cursor:pointer;
+  border:none;
+}
+
+#viewer-btn.active{
+  background:rgba(255,255,255,0.32);
+}
+
+.viewer-pip{
+  position:fixed;
+  right:24px;
+  bottom:24px;
+  width:420px;
+  height:320px;
+  min-width:260px;
+  min-height:180px;
+
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+
+  background:#f8f5ee;
+  border-radius:14px;
+  box-shadow:0 16px 40px rgba(0,0,0,.28), 0 4px 14px rgba(0,0,0,.15);
+
+  z-index:800;
+}
+
+.viewer-pip.hidden{ display:none; }
+
+.viewer-pip.dragging .pip-body{ pointer-events:none; }
+
+.viewer-pip.fullscreen{
+  top:68px !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:auto !important;
+  height:auto !important;
+  border-radius:0;
+}
+
+.viewer-pip.minimized{ height:auto !important; width:260px !important; min-height:0; }
+.viewer-pip.minimized .pip-body,
+.viewer-pip.minimized .pip-resize-handle{ display:none; }
+
+.pip-header{
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 12px;
+  background:#4D7C32;
+  color:#fff;
+  cursor:move;
+  user-select:none;
+}
+
+.viewer-pip.fullscreen .pip-header{ cursor:default; }
+
+.pip-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  font-size:14px;
+  font-weight:bold;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.pip-controls{ display:flex; align-items:center; gap:12px; font-size:14px; flex:none; }
+.pip-controls i{ cursor:pointer; opacity:.85; transition:.2s; }
+.pip-controls i:hover{ opacity:1; transform:scale(1.12); }
+
+.pip-body{ flex:1; position:relative; background:#000; }
+#pip-iframe{ width:100%; height:100%; border:none; display:block; }
+
+.pip-resize-handle{
+  position:absolute;
+  right:0;
+  bottom:0;
+  width:16px;
+  height:16px;
+  cursor:nwse-resize;
+  opacity:.7;
+  background:linear-gradient(135deg, transparent 50%, #4D7C32 50%, #4D7C32 60%, transparent 60%, transparent 70%, #4D7C32 70%, #4D7C32 80%, transparent 80%);
+}
+
+/* menu do card precisa ficar acima da janelinha */
+.popover{ z-index:900; }
+
+@media (max-width:700px){
+  .viewer-pip{ right:8px; bottom:8px; width:calc(100vw - 16px); height:260px; }
+}
