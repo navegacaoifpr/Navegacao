@@ -1,6 +1,6 @@
 // Carrossel compartilhado pelas telas do visitante (instituições e ambientes)
 
-const API = "http://127.0.0.1:8000";
+const API = window.location.origin;
 
 function escapeHtml(text){
   const div = document.createElement("div");

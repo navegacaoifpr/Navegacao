@@ -1,4 +1,4 @@
-const API = "http://127.0.0.1:8000";
+const API = window.location.origin;
 
 // por enquanto o visitante só vê o IFPR (dá pra trocar com ?project=ID)
 const DEFAULT_PROJECT_NAME = "IFPR";

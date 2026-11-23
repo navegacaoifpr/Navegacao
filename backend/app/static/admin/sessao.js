@@ -1,7 +1,7 @@
 // Funções compartilhadas pelas telas do administrador
 // (projetos, login, ambientes e o editor de grafo).
 
-const API = "http://127.0.0.1:8000";
+const API = window.location.origin;;
 
 function getSession(){
   try{
