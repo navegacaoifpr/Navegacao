@@ -7,7 +7,7 @@ import shutil
 import os
 import re
 
-from app import models, database
+from app import models, database, storage
 
 router = APIRouter(prefix="/folders", tags=["Folders"])
 
@@ -392,12 +392,7 @@ def delete_folder(folder_id: int, db: Session = Depends(database.get_db)):
         if still_used:
             continue
 
-        for path in (os.path.join("app/images", image), os.path.join("app/images/thumbs", image)):
-            try:
-                if os.path.exists(path):
-                    os.remove(path)
-            except OSError:
-                pass
+        storage.delete_image(image)
 
     return {"message": f"Pasta excluída com sucesso, junto com {len(node_ids)} imagem(ns)."}
 
@@ -414,29 +409,18 @@ def upload_images_to_folder(
     if not folder:
         raise HTTPException(status_code=404, detail="Pasta não encontrada.")
 
-    upload_dir = "app/images"
-    thumb_dir = os.path.join(upload_dir, "thumbs")
-
-    os.makedirs(upload_dir, exist_ok=True)
-    os.makedirs(thumb_dir, exist_ok=True)
-
     created_nodes = []
 
     for file in files:
-        filename = unique_filename(upload_dir, safe_filename(file.filename))
-        file_path = os.path.join(upload_dir, filename)
-
         try:
-            with open(file_path, "wb") as buffer:
-                shutil.copyfileobj(file.file, buffer)
-        except OSError as erro:
+            # Supabase Storage na Vercel; app/images no PC
+            filename = storage.save_image(file)
+        except Exception as erro:
             db.rollback()
             raise HTTPException(
                 status_code=500,
-                detail=f"Não foi possível salvar a imagem '{filename}': {erro}"
+                detail=f"Não foi possível salvar a imagem '{file.filename}': {erro}"
             )
-
-        generate_thumbnail(file_path, os.path.join(thumb_dir, filename))
 
         base_name = os.path.splitext(filename)[0]
         name = base_name

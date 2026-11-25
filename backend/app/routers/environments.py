@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import shutil
 import os
 
-from app import models, database
+from app import models, database, storage
 from app.routers.folders import safe_filename, unique_filename, generate_thumbnail
 
 router = APIRouter(prefix="/environments", tags=["Environments"])
@@ -316,17 +316,10 @@ def upload_environment_cover(
     env = get_environment_or_404(db, environment_id)
     check_image_upload(file)
 
-    upload_dir = "app/images"
-    thumb_dir = os.path.join(upload_dir, "thumbs")
-    os.makedirs(thumb_dir, exist_ok=True)
-
-    filename = unique_filename(upload_dir, safe_filename(file.filename))
-    file_path = os.path.join(upload_dir, filename)
-
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    generate_thumbnail(file_path, os.path.join(thumb_dir, filename))
+    try:
+        filename = storage.save_image(file)
+    except Exception as erro:
+        raise HTTPException(status_code=500, detail=f"Não foi possível salvar a capa: {erro}")
 
     env.cover_image = filename
     db.commit()

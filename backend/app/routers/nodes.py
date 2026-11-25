@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from app import models, database
+from app import models, database, storage
 from fastapi import UploadFile, File
 from pydantic import BaseModel
 from PIL import Image
@@ -136,24 +136,12 @@ def delete_node(node_id: int, db: Session = Depends(database.get_db)):
     return {"message": "Nó deletado com sucesso!"}
 
 
-# UPLOAD DE IMAGEM
+# UPLOAD DE IMAGEM (vai para o Supabase Storage na Vercel; para app/images no PC)
 @router.post("/upload")
 def upload_image(file: UploadFile = File(...)):
+    try:
+        filename = storage.save_image(file)
+    except Exception as erro:
+        raise HTTPException(status_code=500, detail=f"Não foi possível salvar a imagem: {erro}")
 
-    upload_dir = "app/images"
-    thumb_dir = os.path.join(upload_dir, "thumbs")
-
-    if not os.path.exists(upload_dir):
-        os.makedirs(upload_dir)
-
-    if not os.path.exists(thumb_dir):
-        os.makedirs(thumb_dir)
-
-    file_path = os.path.join(upload_dir, file.filename)
-
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    generate_thumbnail(file_path, os.path.join(thumb_dir, file.filename))
-
-    return {"filename": file.filename}
+    return {"filename": filename}
