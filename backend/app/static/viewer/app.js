@@ -12,7 +12,7 @@ async function updateButtons() {
   const map = { north: "N", south: "S", east: "L", west: "O" };
 
   try {
-    const edges = await fetch(`http://127.0.0.1:8000/edges/${currentNode}`)
+    const edges = await fetch(`/edges/${currentNode}`)
       .then(r => r.json());
 
     // Primeiro, desativa todos
@@ -40,14 +40,14 @@ async function updateButtons() {
 async function go(direction) {
   const map = { N: "north", S: "south", L: "east", O: "west" };
 
-  const edges = await fetch(`http://127.0.0.1:8000/edges/${currentNode}`)
+  const edges = await fetch(`/edges/${currentNode}`)
     .then(r => r.json())
     .catch(() => alert("Erro ao buscar conexões."));
 
   const edge = edges.find(e => e.direction === map[direction]);
   if (!edge) return alert("Sem caminho nessa direção!");
 
-  const nodes = await fetch(`http://127.0.0.1:8000/nodes`)
+  const nodes = await fetch(`/nodes/`)
     .then(r => r.json())
     .catch(() => alert("Erro ao carregar nós."));
 
@@ -71,7 +71,7 @@ async function environmentName(envId) {
 
   if (!(envId in environmentNames)) {
     try {
-      const env = await fetch(`http://127.0.0.1:8000/environments/${envId}`).then(r => r.json());
+      const env = await fetch(`/environments/${envId}`).then(r => r.json());
       environmentNames[envId] = env.name || null;
     } catch {
       environmentNames[envId] = null;
@@ -111,7 +111,7 @@ function showEnvironmentBanner(name) {
 // ou a foto é trocada).
 async function initStart() {
   try {
-    const nodes = await fetch("http://127.0.0.1:8000/nodes").then(r => r.json());
+    const nodes = await fetch("/nodes/").then(r => r.json());
 
     // ponto de partida escolhido na tela de ambientes (?start=ID);
     // sem ele, prioriza nodes já posicionados no mapa do admin

@@ -16,8 +16,8 @@ let newEdgeData = null;
 async function loadGraph(){
 
 // só as fotos e conexões DESTE ambiente
-const nodes = await fetch(`http://127.0.0.1:8000/nodes/?environment_id=${ENV_ID}`).then(r=>r.json());
-const edges = await fetch(`http://127.0.0.1:8000/edges/?environment_id=${ENV_ID}`).then(r=>r.json());
+const nodes = await fetch(`/nodes/?environment_id=${ENV_ID}`).then(r=>r.json());
+const edges = await fetch(`/edges/?environment_id=${ENV_ID}`).then(r=>r.json());
 
 const placedNodes = nodes.filter(n => n.x !== null && n.y !== null);
 const placedIds = new Set(placedNodes.map(n => String(n.id)));
@@ -43,7 +43,7 @@ data:{
 id:"n"+n.id,
 dbId:n.id,
 label:n.name,
-image:`http://127.0.0.1:8000/images/thumbs/${encodeURIComponent(n.image)}`
+image:`/images/thumbs/${encodeURIComponent(n.image)}`
 },
 position:{ x:n.x, y:n.y }
 })),
@@ -180,7 +180,7 @@ async function openEditModal(id){
 
 selectedNodeId = id;
 
-const node = await fetch(`http://127.0.0.1:8000/nodes/${id}`).then(r=>r.json());
+const node = await fetch(`/nodes/${id}`).then(r=>r.json());
 
 document.getElementById("modal-title").innerText = "Editar Node";
 
@@ -196,7 +196,7 @@ renderDoorInfo(id);
 document.getElementById("node-name").value = node.name;
 
 const preview = document.getElementById("preview");
-preview.src = `http://127.0.0.1:8000/images/${encodeURIComponent(node.image)}`;
+preview.src = `/images/${encodeURIComponent(node.image)}`;
 preview.style.display = "block";
 
 document.getElementById("modal").classList.remove("hidden");
@@ -224,13 +224,13 @@ if(selectedNodeId){
 if(!image){
 
 const node = await fetch(
-`http://127.0.0.1:8000/nodes/${selectedNodeId}`
+`/nodes/${selectedNodeId}`
 ).then(r=>r.json());
 
 image = node.image;
 }
 
-res = await fetch(`http://127.0.0.1:8000/nodes/${selectedNodeId}`,{
+res = await fetch(`/nodes/${selectedNodeId}`,{
 method:"PUT",
 headers:{ "Content-Type":"application/json" },
 body: JSON.stringify({
@@ -245,7 +245,7 @@ if(!image){
 image = "placeholder.jpg";
 }
 
-res = await fetch("http://127.0.0.1:8000/nodes/",{
+res = await fetch("/nodes/",{
 method:"POST",
 headers:{ "Content-Type":"application/json" },
 body: JSON.stringify({
@@ -281,7 +281,7 @@ async function deleteNodeFromModal(){
         }
     }
 
-    const res = await fetch(`http://127.0.0.1:8000/nodes/${selectedNodeId}`,{
+    const res = await fetch(`/nodes/${selectedNodeId}`,{
     method:"DELETE"
     });
 
@@ -318,7 +318,7 @@ async function saveEdge(){
   if(selectedEdgeId){
 
     res = await fetch(
-      `http://127.0.0.1:8000/edges/${selectedEdgeId}?direction=${dir}`,
+      `/edges/${selectedEdgeId}?direction=${dir}`,
       { method:"PUT" }
     );
 
@@ -334,7 +334,7 @@ async function saveEdge(){
     });
 
     res = await fetch(
-      `http://127.0.0.1:8000/edges/?${params}`,
+      `/edges/?${params}`,
       { method:"POST" }
     );
 
@@ -352,7 +352,7 @@ async function saveEdge(){
 async function deleteEdge(){
 
     const res = await fetch(
-    `http://127.0.0.1:8000/edges/${selectedEdgeId}`,
+    `/edges/${selectedEdgeId}`,
     {
     method:"DELETE"
     });
@@ -385,7 +385,7 @@ const form = new FormData();
 form.append("file", file);
 
 const res = await fetch(
-"http://127.0.0.1:8000/nodes/upload",
+"/nodes/upload",
 {
 method:"POST",
 body: form
@@ -398,7 +398,7 @@ return data.filename;
 
 async function updatePosition(id,pos){
 
-await fetch(`http://127.0.0.1:8000/nodes/${id}`,{
+await fetch(`/nodes/${id}`,{
 method:"PUT",
 headers:{ "Content-Type":"application/json" },
 body: JSON.stringify(pos)
@@ -448,7 +448,7 @@ return positions;
 
 async function placeNodeAt(nodeId, pos){
 
-await fetch(`http://127.0.0.1:8000/nodes/${nodeId}`,{
+await fetch(`/nodes/${nodeId}`,{
 method:"PUT",
 headers:{ "Content-Type":"application/json" },
 body: JSON.stringify({
@@ -491,7 +491,7 @@ location.reload();
 const folderId = e.dataTransfer.getData("folderId");
 
 const images = await fetch(
-`http://127.0.0.1:8000/folders/${folderId}/images`
+`/folders/${folderId}/images`
 ).then(r=>r.json());
 
 const unplaced = images.filter(n => n.x === null || n.y === null);
@@ -529,7 +529,7 @@ function openPip(){
 if(!iframeLoaded){
 // começa na foto de partida do ambiente aberto no editor
 const start = currentEnvironment && currentEnvironment.start_node_id;
-iframe.src = "http://127.0.0.1:8000/static/viewer/index.html" + (start ? `?start=${start}` : "");
+iframe.src = "/static/viewer/index.html" + (start ? `?start=${start}` : "");
 iframeLoaded = true;
 }
 pip.classList.remove("hidden");
@@ -668,7 +668,7 @@ dragging = false;
 
 async function loadEnvironmentInfo(){
 
-const res = await fetch(`http://127.0.0.1:8000/environments/${ENV_ID}`);
+const res = await fetch(`/environments/${ENV_ID}`);
 
 if(!res.ok){
 showToast("Ambiente não encontrado.", "error");
@@ -701,7 +701,7 @@ async function setAsStartNode(){
 
 if(!selectedNodeId) return;
 
-const res = await fetch(`http://127.0.0.1:8000/environments/${ENV_ID}`,{
+const res = await fetch(`/environments/${ENV_ID}`,{
 method:"PUT",
 headers:{ "Content-Type":"application/json" },
 body: JSON.stringify({ start_node_id: selectedNodeId })
@@ -732,7 +732,7 @@ async function loadDoors(){
 doorsByNode = {};
 
 try{
-const doors = await fetch(`http://127.0.0.1:8000/environments/${ENV_ID}/doors`).then(r=>r.json());
+const doors = await fetch(`/environments/${ENV_ID}/doors`).then(r=>r.json());
 
 doors.forEach(d => {
 (doorsByNode[d.node_id] = doorsByNode[d.node_id] || []).push(d);
@@ -788,7 +788,7 @@ async function removeDoor(door){
 if(!confirm(`Desfazer a passagem para ${door.to_environment_name}?`)) return;
 
 const res = await fetch(
-`http://127.0.0.1:8000/intersections/${door.map_id}/links/${door.link_id}`,
+`/intersections/${door.map_id}/links/${door.link_id}`,
 { method:"DELETE" }
 );
 
@@ -814,8 +814,8 @@ const select = document.getElementById("passage-target-node");
 const preview = document.getElementById("passage-preview");
 
 const [nodes, folders] = await Promise.all([
-fetch(`http://127.0.0.1:8000/nodes/?environment_id=${envId}`).then(r=>r.json()),
-fetch(`http://127.0.0.1:8000/folders/?environment_id=${envId}`).then(r=>r.json())
+fetch(`/nodes/?environment_id=${envId}`).then(r=>r.json()),
+fetch(`/folders/?environment_id=${envId}`).then(r=>r.json())
 ]);
 
 const folderNames = Object.fromEntries(folders.map(f => [f.id, f.name]));
@@ -854,7 +854,7 @@ select.appendChild(group);
 const updatePreview = () => {
 const image = select.selectedOptions[0]?.dataset.image;
 if(image){
-preview.src = `http://127.0.0.1:8000/images/thumbs/${encodeURIComponent(image)}`;
+preview.src = `/images/thumbs/${encodeURIComponent(image)}`;
 preview.classList.remove("hidden");
 }else{
 preview.classList.add("hidden");
@@ -872,8 +872,8 @@ if(!selectedNodeId) return;
 const session = getSession();
 
 const [envs, map] = await Promise.all([
-fetch(`http://127.0.0.1:8000/projects/${session.projectId}/environments`).then(r=>r.json()),
-fetch(`http://127.0.0.1:8000/projects/${session.projectId}/map`).then(r=>r.json())
+fetch(`/projects/${session.projectId}/environments`).then(r=>r.json()),
+fetch(`/projects/${session.projectId}/map`).then(r=>r.json())
 ]);
 
 passageMapId = map.id;
@@ -918,7 +918,7 @@ showToast("Esse ambiente ainda não tem fotos pra receber a passagem.", "error")
 return;
 }
 
-const res = await fetch(`http://127.0.0.1:8000/intersections/${passageMapId}/links`,{
+const res = await fetch(`/intersections/${passageMapId}/links`,{
 method:"POST",
 headers:{ "Content-Type":"application/json" },
 body: JSON.stringify({
