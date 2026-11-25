@@ -1,5 +1,67 @@
 let currentNode = null; // definido dinamicamente em initStart()
 
+/* =========================================================
+   CACHE: o que já foi buscado fica guardado, pra navegação
+   ser instantânea mesmo com o servidor longe (Vercel).
+========================================================= */
+const nodesById = {};      // todas as fotos, buscadas UMA vez no início
+const edgesCache = {};     // ligações de cada foto (id -> Promise)
+const preloaded = new Set(); // fotos já baixadas antecipadamente
+
+function imageUrl(node) {
+  return `/images/${encodeURIComponent(node.image)}`;
+}
+
+// busca as ligações de uma foto só na primeira vez; depois usa a guardada
+function getEdges(nodeId) {
+  if (!edgesCache[nodeId]) {
+    edgesCache[nodeId] = fetch(`/edges/${nodeId}`)
+      .then(r => {
+        if (!r.ok) throw new Error("erro ao buscar conexões");
+        return r.json();
+      })
+      .catch(err => {
+        delete edgesCache[nodeId]; // deu erro: tenta de novo na próxima
+        throw err;
+      });
+  }
+  return edgesCache[nodeId];
+}
+
+// busca uma foto pelo id (normalmente já está na lista carregada no início)
+async function getNode(nodeId) {
+  if (nodesById[nodeId]) return nodesById[nodeId];
+  const node = await fetch(`/nodes/${nodeId}`).then(r => r.json());
+  nodesById[node.id] = node;
+  return node;
+}
+
+// baixa a imagem em segundo plano, pra ela já estar pronta no clique
+function preloadImage(node) {
+  if (!node || preloaded.has(node.id)) return;
+  preloaded.add(node.id);
+  const img = new Image();
+  img.src = imageUrl(node);
+}
+
+// enquanto o visitante olha a foto atual, adianta as vizinhas:
+// baixa a imagem de cada direção possível e as ligações delas
+async function prefetchNeighbors(nodeId) {
+  try {
+    const edges = await getEdges(nodeId);
+    edges.forEach(e => {
+      const next = nodesById[e.target_id];
+      if (next) {
+        preloadImage(next);
+        getEdges(next.id).catch(() => {});
+        environmentName(next.environment_id);
+      }
+    });
+  } catch {
+    // sem problema: só não adiantou
+  }
+}
+
 // Função que carrega as conexões e atualiza os botões
 async function updateButtons() {
   const buttons = {
@@ -12,8 +74,7 @@ async function updateButtons() {
   const map = { north: "N", south: "S", east: "L", west: "O" };
 
   try {
-    const edges = await fetch(`/edges/${currentNode}`)
-      .then(r => r.json());
+    const edges = await getEdges(currentNode);
 
     // Primeiro, desativa todos
     Object.values(buttons).forEach(btn => {
@@ -37,29 +98,37 @@ async function updateButtons() {
   }
 }
 
+// mostra uma foto: troca a imagem, o nome do ambiente e os botões
+function showNode(node) {
+  currentNode = node.id;
+  document.getElementById("view").src = imageUrl(node);
+  updateNodeDisplay(node);
+  updateButtons();
+  prefetchNeighbors(node.id);
+}
+
 async function go(direction) {
   const map = { N: "north", S: "south", L: "east", O: "west" };
 
-  const edges = await fetch(`/edges/${currentNode}`)
-    .then(r => r.json())
-    .catch(() => alert("Erro ao buscar conexões."));
+  let edges;
+  try {
+    edges = await getEdges(currentNode);
+  } catch {
+    return alert("Erro ao buscar conexões.");
+  }
 
   const edge = edges.find(e => e.direction === map[direction]);
   if (!edge) return alert("Sem caminho nessa direção!");
 
-  const nodes = await fetch(`/nodes/`)
-    .then(r => r.json())
-    .catch(() => alert("Erro ao carregar nós."));
-
-  const nextNode = nodes.find(n => n.id === edge.target_id);
+  let nextNode;
+  try {
+    nextNode = await getNode(edge.target_id);
+  } catch {
+    return alert("Erro ao carregar nós.");
+  }
   if (!nextNode) return alert("Destino não encontrado!");
 
-  document.getElementById("view").src = `/images/${encodeURIComponent(nextNode.image)}`;
-  currentNode = nextNode.id;
-  updateNodeDisplay(nextNode);
-
-  // Atualiza os botões de acordo com o novo nó
-  updateButtons();
+  showNode(nextNode);
 }
 
 // nome dos ambientes já buscados (pra não perguntar pra API a cada passo)
@@ -70,12 +139,11 @@ async function environmentName(envId) {
   if (!envId) return null;
 
   if (!(envId in environmentNames)) {
-    try {
-      const env = await fetch(`/environments/${envId}`).then(r => r.json());
-      environmentNames[envId] = env.name || null;
-    } catch {
-      environmentNames[envId] = null;
-    }
+    // guarda a Promise na hora, pra não buscar o mesmo ambiente duas vezes
+    environmentNames[envId] = fetch(`/environments/${envId}`)
+      .then(r => r.json())
+      .then(env => env.name || null)
+      .catch(() => null);
   }
 
   return environmentNames[envId];
@@ -111,7 +179,9 @@ function showEnvironmentBanner(name) {
 // ou a foto é trocada).
 async function initStart() {
   try {
+    // a lista de fotos é buscada UMA vez só e guardada
     const nodes = await fetch("/nodes/").then(r => r.json());
+    nodes.forEach(n => { nodesById[n.id] = n; });
 
     // ponto de partida escolhido na tela de ambientes (?start=ID);
     // sem ele, prioriza nodes já posicionados no mapa do admin
@@ -124,10 +194,7 @@ async function initStart() {
       return;
     }
 
-    currentNode = start.id;
-    document.getElementById("view").src = `/images/${encodeURIComponent(start.image)}`;
-    updateNodeDisplay(start);
-    updateButtons();
+    showNode(start);
 
   } catch {
     alert("Erro ao carregar o node inicial.");
